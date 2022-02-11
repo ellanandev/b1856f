@@ -43,4 +43,22 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/:messageId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { messageId } = req.params;
+    const { readByRecipient } = req.body;
+    const message = await Message.findByPk(messageId);
+    if (!message) {
+      return res.sendStatus(404);
+    }
+    const updatedMessage = await message.update({ readByRecipient });
+    res.json(updatedMessage);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
