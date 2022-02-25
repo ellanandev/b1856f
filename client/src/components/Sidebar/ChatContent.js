@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,16 +31,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    },
+  },
   unreadMessagesCount: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: "#FFF",
-    backgroundColor: "#6091FC",
-    padding: "0.2rem 0.5rem",  
-    borderRadius: "50px",
-    marginRight: "10px",
-    },
+    padding: "0.2rem 0.6rem",
+  },
 }));
 
 const ChatContent = (props) => {
@@ -48,7 +42,12 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-  const unreadMessages = conversation.messages.filter((message) => message.senderId === otherUser.id && !message.readByRecipient ).length;
+  const messagesFromOtherPerson = conversation.messages.filter((message) => message.senderId === otherUser.id)
+  const unreadMessages = messagesFromOtherPerson.slice(
+    messagesFromOtherPerson.findLastIndex(
+      (message) => message.readByRecipient === true
+    ) + 1
+  ).length;
 
   return (
     <Box className={classes.root}>
@@ -57,14 +56,15 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Box className={classes.unreadMessagesWrapper}>
-         <Typography className={unreadMessages > 0 ? classes.previewUnreadText: classes.previewText}>
-          {latestMessageText}
-        </Typography>
-        {unreadMessages > 0 && (
-          <Typography className={classes.unreadMessagesCount}>
-            {unreadMessages}
+          <Typography className={unreadMessages > 0 ? classes.previewUnreadText : classes.previewText}>
+            {latestMessageText}
           </Typography>
-        )}
+          {unreadMessages > 0 && (
+            <Badge badgeContent={unreadMessages} color="primary" anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }} className={classes.unreadMessagesCount} />
+          )}
         </Box>
       </Box>
     </Box>
