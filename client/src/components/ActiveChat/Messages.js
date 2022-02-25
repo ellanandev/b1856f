@@ -17,13 +17,15 @@ const Messages = (props) => {
     }
   }, [messages, otherUser, postMessageRead, userId])
 
+  const lastMessageSentReadByRecipent = messages.filter((message) => message.senderId === userId && message.readByRecipient === true).slice(-1)[0];
+
   return (
     <Box>
       {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
-          <SenderBubble key={message.id} text={message.text} time={time} />
+          <SenderBubble key={message.id} text={message.text} messageId={message.id} time={time} otherUser={otherUser} shouldShowReadCursor={lastMessageSentReadByRecipent.id === message.id} />
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
