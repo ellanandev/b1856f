@@ -54,6 +54,20 @@ router.put("/:messageId", async (req, res, next) => {
     if (!message) {
       return res.sendStatus(404);
     }
+
+    const conversation = await Conversation.findByPk(
+      message.conversationId
+    );
+
+    if (![conversation.user1Id, conversation.user2Id].includes(req.user.id)) {
+      // user is not part of conversation
+      return res.sendStatus(403);
+    }
+    if (message.senderId === req.user.id) {
+      // user is sender, so can't mark as read
+      return res.sendStatus(403);
+    }
+
     const updatedMessage = await message.update({ readByRecipient });
     res.json(updatedMessage);
   } catch (error) {
