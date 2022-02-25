@@ -5,8 +5,8 @@ const ConversationParticipant = require("./conversation_participant");
 
 // associations
 
-User.hasMany(Conversation);
-Conversation.belongsToMany(User, {through: 'conversation_participant'});
+User.belongsToMany(Conversation, { through: 'conversation_participant' });
+Conversation.belongsToMany(User, { through: 'conversation_participant' });
 ConversationParticipant.belongsTo(Message, {
   as: 'lastReadMessage',
 });
