@@ -24,6 +24,21 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
+export const setMessageReadInStore = (state, payload) => {
+  const { conversationId, messageId } = payload;
+  return state.map((convo) => {
+    if (convo.id === conversationId) {
+      console.log({ conversationId, messageId })
+      return {
+        ...convo,
+        messages: convo.messages.map(message => message.id === messageId ? { ...message, readByRecipient: true } : message),
+      };
+    } else {
+      return convo;
+    }
+  });
+};
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
