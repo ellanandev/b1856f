@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from "react";
 import { useSelector } from "react-redux";
 import { Box, Typography, Badge } from "@material-ui/core";
@@ -46,7 +47,8 @@ const ChatContent = (props) => {
   const unreadMessageCount = useSelector(() => {
     const messagesFromOtherPerson = conversation.messages.filter((message) => message.senderId === otherUser.id)
     const unreadMessages = messagesFromOtherPerson.slice(
-      messagesFromOtherPerson.findLastIndex(
+      _.findLastIndex(
+        messagesFromOtherPerson,
         (message) => message.readByRecipient === true
       ) + 1
     );
