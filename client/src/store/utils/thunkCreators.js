@@ -110,12 +110,16 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
-export const postMessageRead = (messageId) => async (dispatch) => {
+export const postMessageRead = (message) => async (dispatch) => {
   try {
-    const { data } = await axios.put(`/api/messages/${messageId}`, {
+    const { data } = await axios.put(`/api/messages/${message.id}`, {
       readByRecipient: true,
     });
-    dispatch(setMessageRead(data));
+    socket.emit("message-read", {
+      messageId: data.id,
+      conversationId: data.conversationId,
+    });
+    dispatch(setMessageRead(data.conversationId, data.id));
   } catch (error) {
     console.error(error);
   }

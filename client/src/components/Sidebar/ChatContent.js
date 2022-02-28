@@ -43,13 +43,15 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-  const unreadMessages = useSelector(() => {
+  const unreadMessageCount = useSelector(() => {
     const messagesFromOtherPerson = conversation.messages.filter((message) => message.senderId === otherUser.id)
-    return messagesFromOtherPerson.slice(
+    const unreadMessages = messagesFromOtherPerson.slice(
       messagesFromOtherPerson.findLastIndex(
         (message) => message.readByRecipient === true
       ) + 1
-    ).length;
+    );
+    console.log('useSelector', { unreadMessages, messagesFromOtherPerson })
+    return unreadMessages.length
   });
 
   return (
@@ -59,11 +61,11 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Box className={classes.unreadMessagesWrapper}>
-          <Typography className={unreadMessages > 0 ? classes.previewUnreadText : classes.previewText}>
+          <Typography className={unreadMessageCount > 0 ? classes.previewUnreadText : classes.previewText}>
             {latestMessageText}
           </Typography>
-          {unreadMessages > 0 && (
-            <Badge badgeContent={unreadMessages} color="primary" anchorOrigin={{
+          {unreadMessageCount > 0 && (
+            <Badge badgeContent={unreadMessageCount} color="primary" anchorOrigin={{
               vertical: "top",
               horizontal: "left",
             }} className={classes.unreadMessagesCount} />
