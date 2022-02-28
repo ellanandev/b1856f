@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -42,12 +43,14 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-  const messagesFromOtherPerson = conversation.messages.filter((message) => message.senderId === otherUser.id)
-  const unreadMessages = messagesFromOtherPerson.slice(
-    messagesFromOtherPerson.findLastIndex(
-      (message) => message.readByRecipient === true
-    ) + 1
-  ).length;
+  const unreadMessages = useSelector(() => {
+    const messagesFromOtherPerson = conversation.messages.filter((message) => message.senderId === otherUser.id)
+    return messagesFromOtherPerson.slice(
+      messagesFromOtherPerson.findLastIndex(
+        (message) => message.readByRecipient === true
+      ) + 1
+    ).length;
+  });
 
   return (
     <Box className={classes.root}>
