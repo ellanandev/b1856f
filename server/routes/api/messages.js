@@ -69,7 +69,7 @@ router.put("/:messageId", async (req, res, next) => {
     }
 
     const updatedMessage = await message.update({ readByRecipient });
-    res.sendStatus(204);
+    res.json(updatedMessage);
   } catch (error) {
     next(error);
   }
