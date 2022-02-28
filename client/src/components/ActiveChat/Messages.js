@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Box } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { postMessageRead } from "../../store/utils/thunkCreators";
 
 
@@ -13,11 +13,13 @@ const Messages = (props) => {
     // mark the last received message as read
     const lastMessageReceived = messages.filter((message) => message.senderId === otherUser.id).slice(-1)[0];
     if (lastMessageReceived && !lastMessageReceived.readByRecipient) {
-      postMessageRead(lastMessageReceived.id)
+      postMessageRead(lastMessageReceived);
     }
   }, [messages, otherUser, postMessageRead, userId])
 
-  const lastMessageSentReadByRecipent = useMemo(() => messages.filter((message) => message.senderId === userId && message.readByRecipient === true).slice(-1)[0], [messages, userId]);
+  const lastMessageSentReadByRecipent = useSelector(() => messages.filter((message) => message.senderId === userId && message.readByRecipient === true).slice(-1)[0]);
+
+  console.log('Messages', { lastMessageSentReadByRecipent, messages })
 
   return (
     <Box>
@@ -36,8 +38,8 @@ const Messages = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    postMessageRead: (messageId) => {
-      dispatch(postMessageRead(messageId));
+    postMessageRead: (message) => {
+      dispatch(postMessageRead(message));
     },
   };
 };
